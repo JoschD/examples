@@ -1,8 +1,25 @@
 
+/* Sidebar top background color */
+div.wy-side-nav-search {
+  background-color: rgb(241, 183, 57);
+}
+
+/* Sidebar top text color */
+.wy-side-nav-search>a {
+  color: rgb(66, 66, 66);
+}
+
+
+/* Sidebar top version color */
+.wy-side-nav-search>div.version {
+  color: rgb(120, 120, 120);
+}
+
 /* Sidebar background color */
-.wy-nav-side, div.wy-side-nav-search {
+.wy-nav-side {
   background-color: rgb(66, 66, 66);
 }
+
 
 /* Sidebar link click color */
 .wy-menu-vertical .toctree-l1 > a:active {
@@ -12,7 +29,7 @@
 
 /* Link color is darker to make hovering more clear */
 .wy-menu-vertical .toctree-l1 > a:hover {
-  background-color: rgb(196, 151, 54);
+  background-color: rgb(241, 183, 57);
   color: rgb(252, 252, 252);
 }
 
