@@ -199,6 +199,8 @@ panels_css_variables = {
 plot_formats = [("svg", 250)]
 # plot_rcparams = josch_examples.utils.defaults.PLOT_PARAMS
 
+# Config for the plotly plot directive
+plot_formats = [("svg", 250)]
 import plotly.io as pio
 pio.renderers.default = 'sphinx_gallery'
 
@@ -215,7 +217,7 @@ html_theme_options = {
     "collapse_navigation": False,
     "display_version": True,
     "logo_only": True,
-    "navigation_depth": 3,
+    "navigation_depth": 2,
 }
 
 # Name of an image file (path relative to the configuration directory)
