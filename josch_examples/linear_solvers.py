@@ -27,8 +27,8 @@ import scipy
 #     A \cdot x = y
 #
 #
-# Inverse and Solve 
-# -----------------
+# Inverse 
+# -------
 # If the equation system is exact solvable, i.e. if the inverse of A exists,
 # we can easily calculate 
 # 
@@ -36,11 +36,6 @@ import scipy
 #       x = A^{-1} \cdot y
 # 
 # from numpy's linalg functions.
-#
-# .. warning::
-#       Don't! Don't ever do that! 
-#       Inverting a matrix is numerically much more unstable than 
-#       using proper solvers for the whole equation system.
 #
 
 # Generate data.
@@ -55,6 +50,15 @@ x = np.linalg.inv(A).dot(y)
 print(f"{x = !s}")
 
 # %%
+# .. warning::
+#       | **Don't!**
+#       | Don't ever do that! 
+#
+#       Inverting a matrix is numerically much more unstable than 
+#       using proper solvers for the whole equation system.
+#
+# Solve
+# -----
 # It is better to let numpy solve this for you:
 
 # Generate data.
@@ -78,15 +82,15 @@ A = np.array([[1, 2, 5],
               [4, 6, 1]])
 y = np.array([3, 6])
 
-# Solve.
+# 1) Solve via inverse.
 try:
-    x = np.linalg.solve(A, y)
+    x = np.linalg.inv(A).dot(y)
 except np.linalg.LinAlgError as e:
     print(f"1) {e.__class__.__name__}: {e!s}")
 
-
+# 3) Solve with `solve` function.
 try:
-        x = np.linalg.inv(A).dot(y)
+    x = np.linalg.solve(A, y)
 except np.linalg.LinAlgError as e:
     print(f"2) {e.__class__.__name__}: {e!s}")
 
@@ -100,7 +104,7 @@ except np.linalg.LinAlgError as e:
 # .. math::
 #       \min_{x} \left\lVert A \cdot x - y \right\rVert
 #
-# In underdetermined systems it finds an exact solution:
+# In *underdetermined* systems it finds an *exact* solution:
 #
 
 # Generate data.
@@ -119,8 +123,8 @@ print(f"{rank = !s}  (of A)")
 print(f"{sv = !s} (singular values of A)")
 
 # %%
-# And the same function can also solve the system for
-# an overdetermined equation system. 
+# And the same function optimizes the residuals for
+# an *overdetermined* equation system. 
 #
 
 # Generate data.
@@ -164,8 +168,8 @@ print(f"{sv = !s} (singular values of A)")
 # such that
 # 
 # .. math::
-#    A_{ub} x \leq b_ub \\
-#    A_{eq} x = b_eq \\
+#    A_{ub} \cdot x \leq b_{ub} \\
+#    A_{eq} \cdot x = b_{eq} \\
 #      l \leq x \leq u 
 #
 # Where we can set :math:`c` to zero, as we don't care about the minimization.
