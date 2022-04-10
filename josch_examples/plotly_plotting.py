@@ -27,6 +27,6 @@ fig
 
 # %%
 # Create Thumbnail for Gallery:
-fig.write_image("../docs/_build/thumb_plotly_plotting.png")
-# sphinx_gallery_thumbnail_path = '_build/thumb_plotly_plotting.png'
+fig.write_image("../docs/gallery/_thumb_plotly_plotting.png")
+# sphinx_gallery_thumbnail_path = 'gallery/_thumb_plotly_plotting.png'
 # %%
