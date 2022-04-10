@@ -20,13 +20,19 @@
 
 .. _linear-solvers:
 
+
+
 =======================
 Linear Equation Solvers
 =======================
 
 A quick summary for linear equation solvers available in python packages.
 
-.. GENERATED FROM PYTHON SOURCE LINES 12-15
+.. GENERATED FROM PYTHON SOURCE LINES 14-15
+
+sphinx_gallery_thumbnail_path = '_static/thumb_linear_solvers.png'
+
+.. GENERATED FROM PYTHON SOURCE LINES 15-18
 
 .. code-block:: default
 
@@ -40,84 +46,36 @@ A quick summary for linear equation solvers available in python packages.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 16-20
+.. GENERATED FROM PYTHON SOURCE LINES 19-37
 
 Let's say we want to solve an equation system
 
 .. math::
     A \cdot x = y
 
-.. GENERATED FROM PYTHON SOURCE LINES 20-26
-
-.. code-block:: default
-
-
-    A = np.array([[1, 2], [4, 6]])
-    y = np.array([3, 6])
-    print("A=")
-    print(A)
-    print(f"{y=!s}")
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    A=
-    [[1 2]
-     [4 6]]
-    y=[3 6]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 27-35
-
 If the equation system is exact solvable, i.e. if the inverse of A exists,
-we can either calculate 
+we can easily calculate 
 
 .. math::
       x = A^{-1} \cdot y
 
+from numpy's linalg functions.
+
 .. warning::
-      Don't!
+      Don't! Don't ever do that! 
+      Inverting a matrix is numerically much more unstable than 
+      using proper solvers for the whole equation system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 35-38
+
+.. GENERATED FROM PYTHON SOURCE LINES 37-44
 
 .. code-block:: default
 
 
+    A = np.array([[1, 2], 
+                  [4, 6]])
+    y = np.array([3, 6])
     x = np.linalg.inv(A).dot(y)
-    print(f"{x=!s}")
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    x=[-3.  3.]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 39-40
-
-Or let numpy solve this for you:
-
-.. GENERATED FROM PYTHON SOURCE LINES 40-44
-
-.. code-block:: default
-
-
-    x = np.linalg.solve(A, y)
     print(f"{x=!s}")
 
 
@@ -137,13 +95,47 @@ Or let numpy solve this for you:
 
 .. GENERATED FROM PYTHON SOURCE LINES 45-46
 
-This does not work with non-invertable matrices!
+It is better to let numpy solve this for you:
 
-.. GENERATED FROM PYTHON SOURCE LINES 46-58
+.. GENERATED FROM PYTHON SOURCE LINES 46-53
 
 .. code-block:: default
 
-    A = np.array([[1, 2, 5], [4, 6, 1]])
+
+    A = np.array([[1, 2], 
+                  [4, 6]])
+    y = np.array([3, 6])
+    x = np.linalg.solve(A, y)
+    print(f"{x=!s}")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    x=[-3.  3.]
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 54-57
+
+But, this only works on quadratic matrices.
+It fails if the matrix does not have an inverse:
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 57-72
+
+.. code-block:: default
+
+
+    A = np.array([[1, 2, 5], 
+                  [4, 6, 1]])
     y = np.array([3, 6])
     try:
         x = np.linalg.solve(A, y)
@@ -155,6 +147,7 @@ This does not work with non-invertable matrices!
             x = np.linalg.inv(A).dot(y)
     except np.linalg.LinAlgError as e:
         print(f"2) {e.__class__.__name__}: {e!s}")
+
 
 
 
@@ -171,13 +164,13 @@ This does not work with non-invertable matrices!
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-62
+.. GENERATED FROM PYTHON SOURCE LINES 73-76
 
-But we can still find a solution for x
-
+Yet, we can still find a solution for x
 via the linear least squares algorithm implemented in numpy:
 
-.. GENERATED FROM PYTHON SOURCE LINES 62-69
+
+.. GENERATED FROM PYTHON SOURCE LINES 76-84
 
 .. code-block:: default
 
@@ -188,6 +181,7 @@ via the linear least squares algorithm implemented in numpy:
     print(f"{rank=!s}")
     print(f"{sv=!s}")
     print(f"A * x = {A @ x}")
+
 
 
 
@@ -207,7 +201,7 @@ via the linear least squares algorithm implemented in numpy:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-75
+.. GENERATED FROM PYTHON SOURCE LINES 85-90
 
 Or at least the x that fulfills: 
 
@@ -215,7 +209,7 @@ Or at least the x that fulfills:
       \min_{x} \left\lVert A \cdot x - y \right\rVert
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 75-85
+.. GENERATED FROM PYTHON SOURCE LINES 90-100
 
 .. code-block:: default
 
