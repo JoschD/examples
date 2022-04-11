@@ -30,11 +30,12 @@ A quick summary for linear equation solvers available in python packages.
 
 .. GENERATED FROM PYTHON SOURCE LINES 14-15
 
-sphinx_gallery_thumbnail_path = '_static/thumb_linear_solvers.png'
+Dependencies:
 
-.. GENERATED FROM PYTHON SOURCE LINES 15-18
+.. GENERATED FROM PYTHON SOURCE LINES 15-20
 
 .. code-block:: default
+
 
     import numpy as np
     import cvxpy as cp
@@ -46,13 +47,20 @@ sphinx_gallery_thumbnail_path = '_static/thumb_linear_solvers.png'
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 19-37
+
+.. GENERATED FROM PYTHON SOURCE LINES 21-40
+
+Simple System of Linear Equations
+=================================
 
 Let's say we want to solve an equation system
 
 .. math::
     A \cdot x = y
 
+
+Inverse 
+-------
 If the equation system is exact solvable, i.e. if the inverse of A exists,
 we can easily calculate 
 
@@ -61,52 +69,66 @@ we can easily calculate
 
 from numpy's linalg functions.
 
+
+.. GENERATED FROM PYTHON SOURCE LINES 40-52
+
+.. code-block:: default
+
+
+    # Generate data.
+    A = np.array([[1, 2], 
+                  [4, 6]])
+    y = np.array([3, 6])
+
+    # Solve.
+    x = np.linalg.inv(A).dot(y)
+
+    # Print result.
+    print(f"{x = !s}")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    x = [-3.  3.]
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 53-63
+
 .. warning::
-      Don't! Don't ever do that! 
+      | **Don't!**
+      | Don't ever do that! 
+
       Inverting a matrix is numerically much more unstable than 
       using proper solvers for the whole equation system.
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 37-44
-
-.. code-block:: default
-
-
-    A = np.array([[1, 2], 
-                  [4, 6]])
-    y = np.array([3, 6])
-    x = np.linalg.inv(A).dot(y)
-    print(f"{x=!s}")
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    x=[-3.  3.]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 45-46
-
+Solve
+-----
 It is better to let numpy solve this for you:
 
-.. GENERATED FROM PYTHON SOURCE LINES 46-53
+.. GENERATED FROM PYTHON SOURCE LINES 63-75
 
 .. code-block:: default
 
 
+    # Generate data.
     A = np.array([[1, 2], 
                   [4, 6]])
     y = np.array([3, 6])
+
+    # Solve.
     x = np.linalg.solve(A, y)
-    print(f"{x=!s}")
+
+    # Print result.
+    print(f"{x = !s}")
 
 
 
@@ -118,33 +140,36 @@ It is better to let numpy solve this for you:
 
  .. code-block:: none
 
-    x=[-3.  3.]
+    x = [-3.  3.]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 54-57
+.. GENERATED FROM PYTHON SOURCE LINES 76-79
 
 But, this only works on quadratic matrices.
 It fails if the matrix does not have an inverse:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 57-72
+.. GENERATED FROM PYTHON SOURCE LINES 79-97
 
 .. code-block:: default
 
 
+    # Generate data.
     A = np.array([[1, 2, 5], 
                   [4, 6, 1]])
     y = np.array([3, 6])
+
+    # 1) Solve via inverse.
     try:
-        x = np.linalg.solve(A, y)
+        x = np.linalg.inv(A).dot(y)
     except np.linalg.LinAlgError as e:
         print(f"1) {e.__class__.__name__}: {e!s}")
 
-
+    # 3) Solve with `solve` function.
     try:
-            x = np.linalg.inv(A).dot(y)
+        x = np.linalg.solve(A, y)
     except np.linalg.LinAlgError as e:
         print(f"2) {e.__class__.__name__}: {e!s}")
 
@@ -164,64 +189,39 @@ It fails if the matrix does not have an inverse:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 73-76
+.. GENERATED FROM PYTHON SOURCE LINES 98-109
 
+Least Squares
+-------------
 Yet, we can still find a solution for x
-via the linear least squares algorithm implemented in numpy:
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 76-84
-
-.. code-block:: default
-
-
-    x, residuals, rank, sv = np.linalg.lstsq(A, y, rcond=None)
-    print(f"{x=!s}")
-    print(f"{residuals=!s}")
-    print(f"{rank=!s}")
-    print(f"{sv=!s}")
-    print(f"A * x = {A @ x}")
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    x=[0.43603133 0.66840731 0.24543081]
-    residuals=[]
-    rank=2
-    sv=[8.08966253 4.19015038]
-    A * x = [3. 6.]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 85-90
-
-Or at least the x that fulfills: 
+via the linear least squares algorithm implemented in numpy.
+It finds the x that minimizes the norm of the residual: 
 
 .. math::
       \min_{x} \left\lVert A \cdot x - y \right\rVert
 
+In *underdetermined* systems it finds an *exact* solution:
 
-.. GENERATED FROM PYTHON SOURCE LINES 90-100
+
+.. GENERATED FROM PYTHON SOURCE LINES 109-125
 
 .. code-block:: default
 
 
-    A = np.array([[1, 1], [6, 1], [4, 6]])
-    y = np.array([3, 6, 8])
+    # Generate data.
+    A = np.array([[1, 2, 5], 
+                  [4, 6, 1]])
+    y = np.array([3, 6])
+
+    # Solve.
     x, residuals, rank, sv = np.linalg.lstsq(A, y, rcond=None)
-    print(f"{x=!s}")
-    print(f"{residuals=!s}")
-    print(f"{rank=!s}")
-    print(f"{sv=!s}")
-    print(f"A * x = {A @ x}")
+
+    # Print result.
+    print(f"{x = !s}")
+    print(f"{A @ x = !s}")
+    print(f"{residuals = !s}")
+    print(f"{rank = !s}  (of A)")
+    print(f"{sv = !s} (singular values of A)")
 
 
 
@@ -233,14 +233,257 @@ Or at least the x that fulfills:
 
  .. code-block:: none
 
-    x=[0.88414055 0.77872745]
-    residuals=[1.83855651]
-    rank=2
-    sv=[8.79740626 3.68858281]
-    A * x = [1.662868   6.08357075 8.20892688]
+    x = [0.43603133 0.66840731 0.24543081]
+    A @ x = [3. 6.]
+    residuals = []
+    rank = 2  (of A)
+    sv = [8.08966253 4.19015038] (singular values of A)
 
 
 
+
+.. GENERATED FROM PYTHON SOURCE LINES 126-129
+
+And the same function optimizes the residuals for
+an *overdetermined* equation system. 
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 129-146
+
+.. code-block:: default
+
+
+    # Generate data.
+    A = np.array([[1, 1], 
+                  [6, 1], 
+                  [4, 6]])
+    y = np.array([3, 6, 8])
+
+    # Solve.
+    x, residuals, rank, sv = np.linalg.lstsq(A, y, rcond=None)
+
+    # Print result.
+    print(f"{x = !s}")
+    print(f"{A @ x = !s}")
+    print(f"{residuals  = !s}")
+    print(f"{rank = !s}  (of A)")
+    print(f"{sv = !s} (singular values of A)")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    x = [0.88414055 0.77872745]
+    A @ x = [1.662868   6.08357075 8.20892688]
+    residuals  = [1.83855651]
+    rank = 2  (of A)
+    sv = [8.79740626 3.68858281] (singular values of A)
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 147-159
+
+Linear Equations with constraints
+=================================
+
+
+.. math::
+    A \cdot x = y
+
+such that
+
+.. math::
+   B \cdot x \leq z
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 161-180
+
+If you need an exact solution for your equalities,
+one can abuse `scipy`'s `linprog`, which finds 
+a solution to the problem
+
+.. math::
+   \min_{x} c^T x
+
+such that
+
+.. math::
+   A_{ub} \cdot x \leq b_{ub} \\
+   A_{eq} \cdot x = b_{eq} \\
+     l \leq x \leq u 
+
+Where we can set :math:`c` to zero, as we don't care about the minimization.
+Using the linear least-squares example above, we had one value > 0.6.
+Let us force all values of x to be below 0.6. 
+We only need to plug-in our equality system (eq) and the bounds:
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 180-197
+
+.. code-block:: default
+
+
+    # Generate data.
+    A = np.array([[1, 2, 5], 
+                  [4, 6, 1]])
+    y = np.array([3, 6])
+    c = np.zeros(A.shape[1])
+
+    # Solve.
+    result = scipy.optimize.linprog(c=c, A_ub=None, b_ub=None, A_eq=A, b_eq=y, bounds=[[None, 0.6]]*3)
+    x = result.x
+
+    # Print result.
+    print(result.message)
+    print(f"{x = !s}")
+    print(f"{A @ x = !s}")
+    print(f"{result.con = !s} (i.e. residuals)")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Optimization terminated successfully.
+    x = [0.57150863 0.57647628 0.25510776]
+    A @ x = [2.99999999 5.99999998]
+    result.con = [8.94371022e-09 1.50023540e-08] (i.e. residuals)
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 198-201
+
+Alternatively, or if our bounds come from another equation system, 
+we can give upper-bounds system (ub) instead of the `bounds`:
+(In this case, this leads to better residuals!)
+
+.. GENERATED FROM PYTHON SOURCE LINES 201-221
+
+.. code-block:: default
+
+
+    # Generate data.
+    A = np.array([[1, 2, 5], 
+                  [4, 6, 1]])
+    y = np.array([3, 6])
+    B = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    z = 0.6 * np.ones(B.shape[1])
+    c = np.zeros(A.shape[1])
+
+    # Solve.
+    result = scipy.optimize.linprog(c=c, A_ub=B, b_ub=z, A_eq=A, b_eq=y, bounds=None)
+    x = result.x
+
+    # Print result.
+    print(result.message)
+    print(f"{x = !s}")
+    print(f"{A @ x = !s}")
+    print(f"{result.slack = !s} (i.e. z - x)")
+    print(f"{result.con = !s} (i.e. residuals)")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Optimization terminated successfully.
+    x = [0.56167494 0.58314915 0.25440535]
+    A @ x = [3.00000001 6.00000001]
+    result.slack = [0.03832506 0.01685085 0.34559465] (i.e. z - x)
+    result.con = [-5.28691224e-09 -5.28691313e-09] (i.e. residuals)
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 222-223
+
+However, this does **not** minimize 
+
+.. GENERATED FROM PYTHON SOURCE LINES 223-243
+
+.. code-block:: default
+
+
+    # Generate data.
+    m = 20
+    n = 15
+    np.random.seed(1)
+    A = np.random.randn(m, n)
+    b = np.random.randn(m)
+
+    # Define and solve the CVXPY problem.
+    x = cp.Variable(n)
+    cost = cp.sum_squares(A @ x - b)
+    prob = cp.Problem(cp.Minimize(cost))
+    prob.solve()
+
+    # Print result.
+    print("\nThe optimal value is", prob.value)
+    print("The optimal x is")
+    print(x.value)
+    print("The norm of the residual is ", cp.norm(A @ x - b, p=2).value)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+
+    The optimal value is 7.005909828287485
+    The optimal x is
+    [ 0.17492418 -0.38102551  0.34732251  0.0173098  -0.0845784  -0.08134019
+      0.293119    0.27019762  0.17493179 -0.23953449  0.64097935 -0.41633637
+      0.12799688  0.1063942  -0.32158411]
+    The norm of the residual is  2.6468679280023557
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 244-259
+
+Nonlinear Optimization
+----------------------
+
+If the problem is non-linear or with error-bars, there are a lot of functions available
+
+- | `scipy.optimize.least_squares(fun, x0, jac='2-point', bounds=(- inf, inf)) <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html#scipy.optimize.least_squares>`_ 
+  | Solve a nonlinear least-squares problem with bounds on the variables.
+
+- | `scipy.optimize.curve_fit(f, xdata, ydata, p0=None, sigma=None, absolute_sigma=False, check_finite=True, bounds=(- inf, inf)) <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html#scipy.optimize.curve_fit>`_ 
+  | Use non-linear least squares to fit a function, f, to data. *(Basically a wrapper around least_squares)*
+
+- | `scipy.optimize.linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None, method='interior-point', callback=None, options=None, x0=None) <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.linprog.html>`_ 
+  | Linear programming: minimize a linear objective function subject to linear equality and inequality constraints.
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 262-263
+
+Thumbnail for the Sphinx-Gallery:
+sphinx_gallery_thumbnail_path = '_static/thumb_linear_solvers.png'
 
 
 .. _sphx_glr_download_gallery_linear_solvers.py:
