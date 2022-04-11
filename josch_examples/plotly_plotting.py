@@ -20,6 +20,8 @@ fig.update_layout(height=400)
 fig
 
 # %%
+# Ignore this
+# ===========
 # Create Thumbnail for the Sphinx-Gallery:
 from pathlib import Path 
 if Path("../docs/gallery").exists():

@@ -242,7 +242,7 @@ print("The norm of the residual is ", cp.norm(A @ x - b, p=2).value)
 
 # %%
 # Nonlinear Optimization
-# ----------------------
+# ======================
 # 
 # If the problem is non-linear or with error-bars, there are a lot of functions available
 #
@@ -257,7 +257,4 @@ print("The norm of the residual is ", cp.norm(A @ x - b, p=2).value)
 #   
 # 
 
-
-# %%
-# Thumbnail for the Sphinx-Gallery:
 # sphinx_gallery_thumbnail_path = '_static/thumb_linear_solvers.png'
